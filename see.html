@@ -1,0 +1,58 @@
+<style>
+.title{
+    position: relative;
+    display: inline-block;
+    float: left;
+    font-size: 37px;
+    top: 15px;
+    left: 10px;
+}
+.bar{
+    background-color: #ffacb6;
+    height: 80px;
+    position: fixed;
+    width: 100%;
+}
+body{
+    margin: 0;
+    min-width: 612px;
+}
+a {
+    text-decoration: none;
+    color: black;
+}
+</style>
+<div class="bar">
+    <div class="title"><a href="index.html">< Back</a></div>
+</div>
+<script>
+function GetRequest() {
+var url = location.search; //获取url中"?"符后的字串
+var theRequest = new Object();
+if (url.indexOf("?") != -1) {
+var str = url.substr(1);
+strs = str.split("&");
+for(var i = 0; i < strs.length; i ++) {
+theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+}
+}
+return theRequest;
+}
+
+    
+    function init(){
+        var a = document.getElementById("my-video");
+        a.style.width = document.documentElement.clientWidth+"px";
+        a.style.height = document.documentElement.clientHeight - 80 +"px";
+        a.style.top = "80px";
+    }
+    function a(){
+        var Request = new Object();
+        Request = GetRequest();
+        document.getElementById("play").innerHTML = '<video id="my-video" class="video-js" controls preload="auto" width="960" height="540" poster="'+Request["img"]+'" id="b" data-setup="{}"><source src="'+Request["path"]+'" type="video/mp4" id="a"/></video>'
+        setInterval("init();", 100);
+    }
+</script>
+<body onload="a();">
+<div id="play" ></div>
+<link href="video-js.css" rel="stylesheet" /><script src="video.min.js"></script>

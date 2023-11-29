@@ -1,0 +1,228 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script>
+    var base_server = "http://127.0.0.1/api/";
+    var api_vlst = base_server + "/getVideoList.php";
+    var api_chage = base_server + "/set.php";
+    var api_imgx = base_server + "/video_.php?URL=";
+    //加载json中的配置(直接) [不可用]
+    function  loadx() {
+        loadm();
+        return;
+            var xmlhttp;
+            if (window.XMLHttpRequest)
+            {
+                xmlhttp=new XMLHttpRequest();
+            }
+            else
+            {
+                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlhttp.open("GET","config.json",true);
+            xmlhttp.send();
+            xmlhttp.onreadystatechange=function()
+            {
+                if (xmlhttp.readyState==4 && xmlhttp.status==200)
+                { 
+                    DATA_LEST = xmlhttp.responseText;
+                    const REdata = JSON.parse(DATA_LEST);
+                    base_server = REdata.base_server;
+                    api_vlst = REdata.api_vlst;
+                    api_imgx = REdata.api_imgx;
+                    
+                }
+            }
+        }
+    var DATA_LEST = "";
+        function  loadm() {
+            var xmlhttp;
+            if (window.XMLHttpRequest)
+            {
+                xmlhttp=new XMLHttpRequest();
+            }
+            else
+            {
+                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlhttp.open("GET",api_vlst,true);
+            xmlhttp.send();
+            xmlhttp.onreadystatechange=function()
+            {
+                if (xmlhttp.readyState==4 && xmlhttp.status==200)
+                { 
+                    DATA_LEST = xmlhttp.responseText;
+                    const REdata = JSON.parse(DATA_LEST);
+                    for (let i = 0; i < REdata.data.length; i++) {
+                        pre_list(REdata.data[i]);
+                    }
+                }
+            }
+            setInterval("LoadImageInit();", 1000);
+        }
+    function pre_list(thing){
+        var mainable = document.getElementById("video_list");
+        //console.log(thing)
+        if(thing.name == ""){return;}
+        mainable.innerHTML = mainable.innerHTML + '<div class="videos"><a href="see.html?path='+base_server+thing.path+'&img='+api_imgx+thing.REL_path+'"><img class="vid_img" src="loading.jpg" data-src="'+api_imgx+thing.REL_path+'"/><br><t class="vid_title">'+thing.name+'</t><br><t class="vid_tell">'+thing.tell+'</t><br><t>星级:'+thing.sort+'</t></a><a href="'+api_chage+'?f='+thing.id+'">修改</a></div>';
+    }
+    function LoadImageInit(){
+        LoadImage(document.body);
+    }
+    function LoadImage(main_thing){
+		var childrens = main_thing.children;
+		for (let i = 0; i < childrens.length; i++) {
+			if (childrens[i].tagName == 'IMG' || childrens[i].tagName == 'img') {
+				chage(childrens[i]);
+			}else{
+                LoadImage(childrens[i]);
+            }
+		}
+	}
+    function chage(a){
+		if (a.offsetTop > document.body.scrollTop
+			&& a.offsetTop < document.body.scrollTop + document.body.clientHeight
+			){
+                //if (a.src != a.getAttribute('data-src')){
+                    a.src = a.getAttribute('data-src');//image
+                    //return;
+                //}
+			
+		}
+	}
+    function Sreach(){
+        document.getElementById("video_list").innerHTML = "";
+        var key = document.getElementById("sreacht").value;
+        const REdata = JSON.parse(DATA_LEST);
+        for (let i = 0; i < REdata.data.length; i++) {
+            if(REdata.data[i].name.indexOf(key)!=-1 || REdata.data[i].tell.indexOf(key)!=-1 || "R:"+REdata.data[i].sort == key){
+                pre_list(REdata.data[i]);
+            }
+        }
+        if (document.getElementById("video_list").innerHTML == ""){
+            document.getElementById("video_list").innerHTML = "<h1>在列表中没有您搜索的关键词!</h1>";
+        }
+    }
+    function set_sreach(key){
+        if(key==""){
+            document.getElementById("sreacht").value = "";
+            Sreach();
+            return;
+        }
+        document.getElementById("sreacht").value = "R:"+key;
+        Sreach();
+    }
+</script>
+<style>
+    #video_list{
+        width: 100%;
+        margin-top: 50px;
+    }
+    .videos{
+        background-color:#F26D7D;
+        color: aliceblue;
+        display: inline-grid;
+        max-width: 286;
+        margin: 10px;
+        height: auto;
+        border-radius: 5px;
+    }
+    .vid_title{
+        text-align: center;
+        width: 100%;
+        display: block;
+        font-size: 21px;
+        color: antiquewhite;
+    }
+    .vid_tell{
+        display: block;
+        width: 100%;
+        font-size: 8px;
+        color: antiquewhite;
+    }
+    img{
+        border-radius: 5px;
+    }
+.search-box {
+position: relative;
+display: inline-block;
+float: right;
+right: 10px;
+top:20px
+}
+.search-input {
+width: 300px;
+height: 40px;
+padding: 5px;
+border: 1px solid #ccc;
+border-radius: 5px;
+font-size: 16px;
+outline: none;
+}
+.search-btn {
+position: absolute;
+top: 0;
+right: 0;
+width: 80px;
+height: 40px;
+background-color: #F26D7D;
+border: none;
+border-radius: 5px;
+color: #fff;
+font-size: 16px;
+outline: none;
+cursor: pointer;
+}
+.title{
+    position: relative;
+    display: inline-block;
+    float: left;
+    font-size: 37px;
+    top: 15px;
+    left: 10px;
+}
+.bar{
+    background-color: #ffacb6;
+    height: 80px;
+    position: fixed;
+    width: 100%;
+}
+body{
+    margin: 0;
+    min-width: 612px;
+}
+.btn{
+    padding: 5px;
+    margin: 5px;
+    margin-top: 50px;
+    width: 80px;
+    height: 40px;
+    background-color: #F26D7D;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 16px;
+    display: inline-block;
+}
+</style>
+<body onload="loadx()">
+<div class="bar">
+    <div class="title">NAS-Video</div>
+    <!--<div class="btn"><a href="updata.html">UpViedo</a></div>-->
+    <div class="search-box">
+        <input type="text" class="search-input" placeholder="搜索内容..." id="sreacht">
+        <button class="search-btn" onclick="Sreach();">搜索</button>
+    </div>
+</div>
+<br><br>
+<div id="link_list">
+    <a class="btn" onclick="set_sreach('')">全部</a>
+    <a class="btn" onclick="set_sreach('-1')">★-1</a>
+    <a class="btn" onclick="set_sreach('0')">★0</a>
+    <a class="btn" onclick="set_sreach('1')">★1</a>
+    <a class="btn" onclick="set_sreach('2')">★2</a>
+    <a class="btn" onclick="set_sreach('3')">★3</a>
+    <a class="btn" onclick="set_sreach('4')">★4</a>
+    <a class="btn" onclick="set_sreach('5')">★5</a>
+</div>
+    <br><br>
+    <div id="video_list">
+    </div>
+</body>
